@@ -1,13 +1,14 @@
-# MiniProject
-#6th Semester Mini Project
+# 🎯 Mini Project — 6th Semester
 
-#Members:
-Debdyuti Chakraborty
-Binayak Shome
-Atharva Pratap Singh
-Aryan Sinha
-Aryan Yadav
-Deepjyoti Bhattacharya
+## 👥 Team Members
+- **Debdyuti Chakraborty**
+- **Binayak Shome**
+- **Atharva Pratap Singh**
+- **Aryan Sinha**
+- **Aryan Yadav**
+- **Deepjyoti Bhattacharya**
 
-#Project Guide:
-Prof Himanshu Ranjan Sir
+## 👨‍🏫 Project Guide
+- **Prof. Himanshu Ranjan**
+
+---
