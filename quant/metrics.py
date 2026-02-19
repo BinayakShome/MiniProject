@@ -29,6 +29,11 @@ def portfolio_performance(weights, mean_returns, cov_matrix, risk_free_rate=0.06
 
     port_return = np.dot(weights, mean_returns)
     port_vol = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
-    sharpe = (port_return - risk_free_rate) / port_vol
+
+    # Guard: zero volatility makes Sharpe undefined — return 0.0 instead of ±inf/NaN
+    if port_vol == 0:
+        sharpe = 0.0
+    else:
+        sharpe = (port_return - risk_free_rate) / port_vol
 
     return port_return, port_vol, sharpe
