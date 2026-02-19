@@ -11,4 +11,6 @@
 ## 👨‍🏫 Project Guide
 - **Prof. Himanshu Ranjan**
 
+## Project Details
+AURA: Autonomous Regime-Aware Portfolio Intelligence Engine
 ---
