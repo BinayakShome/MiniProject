@@ -52,7 +52,7 @@ class ExplanationAgent:
                     "prompt": prompt,
                     "stream": False
                 },
-                timeout=60
+                timeout=None
             )
             response.raise_for_status()
             data = response.json()
