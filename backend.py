@@ -23,7 +23,7 @@ from quant.monte_carlo import monte_carlo_simulation
 app = FastAPI()
 
 # ==============================
-# DATA CACHE (ADD HERE)
+# DATA CACHE
 # ==============================
 
 price_cache = None
@@ -55,7 +55,6 @@ allocation_colors = {
     "LIQUIDBEES.NS": "#3A4260"
 }
 
-
 # ==============================
 # Request Model
 # ==============================
@@ -65,7 +64,6 @@ class AnalyzeRequest(BaseModel):
     horizon: int
     tolerance: str
     generate_memo: bool = False
-
 
 # ==============================
 # Serve Dashboard
@@ -91,7 +89,6 @@ def get_state():
         "state": state
     }
 
-
 # ==============================
 # Main Portfolio Analysis API
 # ==============================
@@ -103,18 +100,27 @@ def analyze(req: AnalyzeRequest):
     horizon = req.horizon
     tolerance = req.tolerance
 
-    # ==============================
-    # Load Data
-    # ==============================
     global price_cache, return_cache, cov_cache
+
+    # ==============================
+    # Load / Cache Market Data
+    # ==============================
 
     if price_cache is None:
 
         loader = DataLoader(tickers)
         prices = loader.fetch_data()
+
+        # Handle Yahoo Finance rate limit
+        if prices is None or prices.empty:
+            raise Exception("Market data download failed (Yahoo Finance rate limit). Please try again later.")
+
         prices = prices[tickers]
 
         log_returns = compute_log_returns(prices)
+
+        if log_returns.empty:
+            raise Exception("Log returns empty. Market data fetch failed.")
 
         price_cache = prices
         return_cache = log_returns
@@ -170,6 +176,9 @@ def analyze(req: AnalyzeRequest):
     portfolio_daily = np.dot(log_returns.values, final_array)
     portfolio_values = np.exp(np.cumsum(portfolio_daily))
 
+    if len(portfolio_values) == 0:
+        raise Exception("Portfolio calculation failed due to empty market data.")
+
     cagr = compute_cagr(portfolio_values)
     max_dd = compute_max_drawdown(portfolio_values)
     calmar = compute_calmar(cagr, max_dd)
@@ -193,8 +202,6 @@ def analyze(req: AnalyzeRequest):
         years=horizon,
         simulations=1500
     )
-
-    # Create histogram structure for UI
 
     counts, edges = np.histogram(mc_results_array, bins=40)
 
@@ -281,4 +288,6 @@ def analyze(req: AnalyzeRequest):
         "historicalValues": portfolio_values.tolist(),
         "memo": memo
     }
-#Run python -m uvicorn backend:app --reload
+
+# Run locally:
+# python -m uvicorn backend:app --reload
