@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AURA — Portfolio Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ─── DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --bg:        #080A0E;
+  --surface:   #0E1117;
+  --border:    #1C2130;
+  --gold:      #C8A96E;
+  --gold-dim:  #8A6E3F;
+  --amber:     #E8C547;
+  --ice:       #8BBFCC;
+  --text:      #D4CCBE;
+  --muted:     #5C6070;
+  --danger:    #C94F4F;
+  --success:   #5BAE7E;
+  --accent:    #3A4260;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif:   'DM Serif Display', serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --radius:    4px;
+  --gutter:    clamp(1rem, 3vw, 2.5rem);
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animated grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ─── HEADER ────────────────────────────────────────────── */
+header {
+  padding: 2rem var(--gutter) 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: var(--gutter);
+  width: 120px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-aura {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  line-height: 0.9;
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.header-badge {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.regime-badge {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  border-radius: 2px;
+  background: rgba(200,169,110,0.05);
+  transition: all 0.4s;
+}
+
+/* ─── MAIN LAYOUT ───────────────────────────────────────── */
+.app {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--gutter);
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  grid-template-rows: auto;
+  gap: var(--gutter);
+}
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+}
+
+/* ─── PANEL ─────────────────────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: 0.5;
+}
+
+.panel-title {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* ─── INPUT FORM ─────────────────────────────────────────── */
+.input-col {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+input[type="number"],
+select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+
+input[type="number"]:focus,
+select:focus {
+  border-color: var(--gold-dim);
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.08);
+}
+
+input[type="number"]::placeholder { color: var(--muted); }
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-dim);
+  pointer-events: none;
+}
+
+select option { background: var(--surface); }
+
+/* Horizon range slider */
+.slider-group { display: flex; flex-direction: column; gap: 6px; }
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.slider-val {
+  font-size: 20px;
+  color: var(--gold);
+  min-width: 40px;
+  text-align: right;
+  font-family: var(--font-display);
+}
+
+input[type="range"] {
+  flex: 1;
+  appearance: none;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--bg);
+  transition: transform 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+/* ─── TOGGLE ─────────────────────────────────────────────── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.toggle-label {
+  font-size: 11px;
+  color: var(--text);
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  display: inline-block;
+}
+
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.3s, background 0.3s;
+}
+
+.toggle input:checked + .toggle-slider { background: rgba(200,169,110,0.2); }
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+  background: var(--gold);
+}
+
+/* ─── ANALYZE BUTTON ─────────────────────────────────────── */
+.btn-analyze {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.btn-analyze::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,169,110,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-analyze:hover {
+  border-color: var(--gold);
+  color: var(--amber);
+}
+
+.btn-analyze:hover::before { opacity: 1; }
+
+.btn-analyze:disabled {
+  border-color: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* Loading spinner in button */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--gold-dim);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── RESULTS COLUMN ─────────────────────────────────────── */
+.results-col {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter);
+}
+
+@media (max-width: 900px) { .results-col { grid-column: 1; } }
+
+/* ─── HERO METRICS ───────────────────────────────────────── */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.hero-metric {
+  background: var(--surface);
+  padding: 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hero-metric.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-metric-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-metric-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--gold);
+}
+
+.hero-metric-sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ─── CHARTS GRID ────────────────────────────────────────── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+}
+
+@media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+
+/* ─── ALLOCATION TABLE ───────────────────────────────────── */
+.alloc-table { width: 100%; border-collapse: collapse; }
+.alloc-table td { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.alloc-table tr:last-child td { border-bottom: none; }
+
+.alloc-bar-track {
+  background: var(--bg);
+  border-radius: 2px;
+  height: 4px;
+  width: 100%;
+  margin-top: 4px;
+}
+.alloc-bar {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.alloc-ticker {
+  font-size: 11px;
+  color: var(--muted);
+  width: 130px;
+}
+
+.alloc-name {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.alloc-pct {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--gold);
+  text-align: right;
+  padding-left: 1rem;
+}
+
+/* ─── REGIME INDICATOR ───────────────────────────────────── */
+.regime-display {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.regime-name {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.regime-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+/* ─── RISK SCORE ─────────────────────────────────────────── */
+.risk-dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.risk-arc {
+  position: relative;
+  width: 120px;
+  height: 60px;
+}
+
+.risk-arc svg { overflow: visible; }
+
+.risk-score-val {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--gold);
+  text-align: center;
+}
+
+/* ─── DECISION BANNER ────────────────────────────────────── */
+.decision-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.decision-banner.rebalance {
+  border-color: var(--amber);
+  background: rgba(232,197,71,0.06);
+  color: var(--amber);
+}
+
+.decision-banner.hold {
+  border-color: var(--success);
+  background: rgba(91,174,126,0.06);
+  color: var(--success);
+}
+
+/* ─── MEMO SECTION ───────────────────────────────────────── */
+.memo-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+}
+
+.memo-box::-webkit-scrollbar { width: 4px; }
+.memo-box::-webkit-scrollbar-track { background: var(--bg); }
+.memo-box::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ─── ERROR ──────────────────────────────────────────────── */
+.error-box {
+  background: rgba(201,79,79,0.07);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 1rem;
+  color: var(--danger);
+  font-size: 12px;
+  display: none;
+}
+
+/* ─── PLACEHOLDER ────────────────────────────────────────── */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 1rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.placeholder-text {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.fade-up { animation: fadeUp 0.6s ease forwards; }
+
+/* stagger children */
+.stagger > * { opacity: 0; }
+.stagger.active > *:nth-child(1) { animation: fadeUp 0.5s 0.0s ease forwards; }
+.stagger.active > *:nth-child(2) { animation: fadeUp 0.5s 0.1s ease forwards; }
+.stagger.active > *:nth-child(3) { animation: fadeUp 0.5s 0.2s ease forwards; }
+.stagger.active > *:nth-child(4) { animation: fadeUp 0.5s 0.3s ease forwards; }
+.stagger.active > *:nth-child(5) { animation: fadeUp 0.5s 0.4s ease forwards; }
+.stagger.active > *:nth-child(6) { animation: fadeUp 0.5s 0.5s ease forwards; }
+
+/* Pulse for regime badge */
+@keyframes pulse-border {
+  0%,100% { box-shadow: 0 0 0 0 rgba(200,169,110,0); }
+  50%      { box-shadow: 0 0 0 6px rgba(200,169,110,0.12); }
+}
+.regime-badge.active { animation: pulse-border 2s infinite; }
+
+/* Scanline effect for the header */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(255,255,255,0.01) 3px,
+    rgba(255,255,255,0.01) 4px
+  );
+  pointer-events: none;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ╔══════════ HEADER ════════════╗ -->
+<header>
+  <div class="scanlines"></div>
+  <div class="logo">
+    <span class="logo-aura">AURA</span>
+    <span class="logo-sub">Autonomous Regime-Aware Portfolio Intelligence Engine</span>
+  </div>
+  <div class="header-badge">
+    <span class="regime-badge" id="headerRegime">AWAITING ANALYSIS</span>
+  </div>
+</header>
+
+<!-- ╔══════════ APP ════════════╗ -->
+<div class="app">
+
+  <!-- LEFT: Input panel -->
+  <aside class="input-col">
+
+    <div class="panel">
+      <div class="panel-title">Investor Profile</div>
+
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age" min="1" max="100" value="30" placeholder="30"/>
+      </div>
+
+      <div class="form-group slider-group" style="margin-top:1rem;">
+        <label>Investment Horizon</label>
+        <div class="slider-row">
+          <input type="range" id="horizon" min="1" max="40" value="10"
+                 oninput="document.getElementById('horizonVal').textContent=this.value"/>
+          <span class="slider-val" id="horizonVal">10</span>
+          <span style="color:var(--muted);font-size:10px;">yr</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="tolerance">Risk Tolerance</label>
+        <div class="select-wrapper">
+          <select id="tolerance">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toggle-row" style="margin-top:1.2rem;">
+        <span class="toggle-label">Generate AI Memo (requires Ollama)</span>
+        <label class="toggle">
+          <input type="checkbox" id="generateMemo"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <button class="btn-analyze" id="analyzeBtn" onclick="runAnalysis()">
+        ANALYSE PORTFOLIO
+      </button>
+    </div>
+
+    <!-- Previous state panel -->
+    <div class="panel" id="prevStatePanel" style="display:none;">
+      <div class="panel-title">Last State</div>
+      <div id="prevStateContent" style="font-size:11px;color:var(--muted);line-height:2;"></div>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT: Results -->
+  <main class="results-col" id="resultsCol">
+
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- Placeholder -->
+    <div class="placeholder" id="placeholder">
+      <div class="placeholder-icon">◈</div>
+      <div class="placeholder-text">Configure your profile and run analysis</div>
+    </div>
+
+    <!-- Results (hidden until analysis) -->
+    <div id="resultsWrap" style="display:none; flex-direction:column; gap: var(--gutter);">
+
+      <!-- Hero metrics -->
+      <div class="hero-metrics stagger" id="heroMetrics">
+        <div class="hero-metric"><div class="hero-metric-label">Sharpe Ratio</div><div class="hero-metric-value" id="mSharpe">—</div><div class="hero-metric-sub">Risk-adjusted return</div></div>
+        <div class="hero-metric"><div class="hero-metric-label">CAGR</div><div class="hero-metric-value" id="mCagr">—</div><div class="hero-metric-sub">Annual growth</div></div>
+        <div class="hero-metric"><div class="hero-metric-label">Max Drawdown</div><div class="hero-metric-value" id="mDrawdown">—</div><div class="hero-metric-sub">Worst peak-to-trough</div></div>
+        <div class="hero-metric"><div class="hero-metric-label">Calmar Ratio</div><div class="hero-metric-value" id="mCalmar">—</div><div class="hero-metric-sub">Return / max DD</div></div>
+        <div class="hero-metric"><div class="hero-metric-label">MC Expected ×</div><div class="hero-metric-value" id="mMcExpected">—</div><div class="hero-metric-sub">Wealth multiple</div></div>
+        <div class="hero-metric"><div class="hero-metric-label">Prob. of Loss</div><div class="hero-metric-value" id="mProbLoss">—</div><div class="hero-metric-sub">Monte Carlo paths</div></div>
+      </div>
+
+      <!-- Decision banner -->
+      <div class="decision-banner" id="decisionBanner">
+        <span id="decisionIcon">◈</span>
+        <span id="decisionText">—</span>
+      </div>
+
+      <!-- Charts row -->
+      <div class="charts-grid">
+        <!-- Allocation donut -->
+        <div class="panel">
+          <div class="panel-title">Allocation</div>
+          <div class="chart-wrap"><canvas id="allocChart"></canvas></div>
+        </div>
+
+        <!-- Monte Carlo histogram -->
+        <div class="panel">
+          <div class="panel-title">Monte Carlo Distribution</div>
+          <div class="chart-wrap"><canvas id="mcChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Allocation detail + regime + risk -->
+      <div class="charts-grid">
+        <div class="panel">
+          <div class="panel-title">Holdings Breakdown</div>
+          <table class="alloc-table" id="allocTable"></table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Market Regime &amp; Risk Score</div>
+          <div class="regime-display">
+            <div class="regime-icon" id="regimeIcon">🔵</div>
+            <div class="regime-name" id="regimeName">—</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:1rem;" id="regimeDesc">—</div>
+          </div>
+          <div class="risk-dial">
+            <div style="font-size:10px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;">Risk Score</div>
+            <div class="risk-score-val" id="riskScoreVal">—</div>
+            <div style="height:8px;background:var(--bg);border-radius:4px;width:80%;overflow:hidden;">
+              <div id="riskBar" style="height:100%;background:var(--gold);border-radius:4px;width:0%;transition:width 1s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historical value chart -->
+      <div class="panel">
+        <div class="panel-title">Portfolio Value — Last 252 Trading Days</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="histChart"></canvas></div>
+      </div>
+
+      <!-- AI Memo (shown only if requested) -->
+      <div class="panel" id="memoPanel" style="display:none;">
+        <div class="panel-title">AI Investment Memo</div>
+        <div class="memo-box" id="memoContent"></div>
+      </div>
+
+    </div><!-- /resultsWrap -->
+  </main>
+</div><!-- /app -->
+
+<script>
+/* ───── Chart.js global defaults ───── */
+Chart.defaults.color = '#5C6070';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 10;
+
+let allocChartInst = null;
+let mcChartInst    = null;
+let histChartInst  = null;
+
+/* ───── REGIME META ───── */
+const REGIME_META = {
+  "Bull Market":     { icon: "🟢", desc: "Equity tilt +10%. Positive momentum across assets." },
+  "Bear Market":     { icon: "🔴", desc: "Equity tilt -30%. Capital preservation mode." },
+  "High Volatility": { icon: "🟠", desc: "Equity tilt -20%. High turbulence detected." },
+  "Sideways Market": { icon: "🔵", desc: "No tilt applied. Range-bound conditions." },
+};
+
+/* ───── Load previous state on page load ───── */
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const r = await fetch('/api/state');
+    const d = await r.json();
+    if (d.has_state && d.state && d.state.allocation) {
+      const panel = document.getElementById('prevStatePanel');
+      const content = document.getElementById('prevStateContent');
+      const alloc = d.state.allocation;
+      const lines = Object.entries(alloc).map(([t, v]) =>
+        `<span style="color:var(--text)">${t}</span>  <span style="color:var(--gold)">${(v*100).toFixed(1)}%</span>`
+      ).join('<br>');
+      content.innerHTML = `<div style="margin-bottom:8px;font-size:9px;letter-spacing:0.2em;color:var(--muted);">SAVED ALLOCATION</div>${lines}`;
+      panel.style.display = 'block';
+    }
+  } catch(_) {}
+});
+
+/* ───── MAIN ANALYSIS ───── */
+async function runAnalysis() {
+  const btn = document.getElementById('analyzeBtn');
+  const errorBox = document.getElementById('errorBox');
+  const placeholder = document.getElementById('placeholder');
+  const resultsWrap = document.getElementById('resultsWrap');
+
+  // Validate
+  const age = parseInt(document.getElementById('age').value);
+  const horizon = parseInt(document.getElementById('horizon').value);
+  const tolerance = document.getElementById('tolerance').value;
+  const generateMemo = document.getElementById('generateMemo').checked;
+
+  if (!age || age < 1 || age > 100) { showError("Please enter a valid age (1-100)."); return; }
+
+  // Loading state
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>ANALYSING...';
+  errorBox.style.display = 'none';
+  placeholder.style.display = 'none';
+  resultsWrap.style.display = 'none';
+
+  try {
+    const resp = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ age, horizon, tolerance, generate_memo: generateMemo })
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      showError(data.detail || "Analysis failed.");
+      return;
+    }
+
+    renderResults(data, horizon);
+
+  } catch(e) {
+    showError("Network error: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'ANALYSE PORTFOLIO';
+  }
+}
+
+/* ───── RENDER ───── */
+function renderResults(d, horizon) {
+  const resultsWrap = document.getElementById('resultsWrap');
+  resultsWrap.style.display = 'flex';
+
+  /* Hero metrics */
+  const perf = d.performance;
+  const mc   = d.monteCarlo;
+  animateVal('mSharpe',   perf.Sharpe, '');
+  animateVal('mCagr',     (perf.CAGR*100).toFixed(1), '%');
+  animateVal('mDrawdown', (perf.MaxDrawdown*100).toFixed(1), '%');
+  animateVal('mCalmar',   perf.CalmarRatio, '');
+  animateVal('mMcExpected', mc.ExpectedFinalValue + '×', '');
+  animateVal('mProbLoss', (mc.ProbabilityOfLoss*100).toFixed(0) + '%', '');
+
+  /* Stagger animation */
+  const heroMetrics = document.getElementById('heroMetrics');
+  heroMetrics.classList.add('active');
+  heroMetrics.querySelectorAll('.hero-metric').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), i * 80);
+  });
+
+  /* Regime */
+  const meta = REGIME_META[d.regime] || { icon: '⚪', desc: '' };
+  document.getElementById('headerRegime').textContent = d.regime.toUpperCase();
+  document.getElementById('headerRegime').classList.add('active');
+  document.getElementById('regimeIcon').textContent = meta.icon;
+  document.getElementById('regimeName').textContent = d.regime;
+  document.getElementById('regimeDesc').textContent = meta.desc;
+
+  /* Risk score */
+  document.getElementById('riskScoreVal').textContent = d.riskScore;
+  setTimeout(() => {
+    document.getElementById('riskBar').style.width = (d.riskScore * 100) + '%';
+  }, 300);
+
+  /* Decision banner */
+  const banner = document.getElementById('decisionBanner');
+  if (d.rebalanceRecommended) {
+    banner.className = 'decision-banner rebalance';
+    document.getElementById('decisionIcon').textContent = '⚡';
+    document.getElementById('decisionText').textContent =
+      `Rebalance Recommended  ·  Turnover: ${d.turnover !== null ? (d.turnover*100).toFixed(2)+'%' : 'N/A (first run)'}`;
+  } else {
+    banner.className = 'decision-banner hold';
+    document.getElementById('decisionIcon').textContent = '✓';
+    document.getElementById('decisionText').textContent =
+      `Portfolio Within Threshold — Hold  ·  Turnover: ${(d.turnover*100).toFixed(2)}%`;
+  }
+
+  /* Allocation table */
+  const tbody = document.getElementById('allocTable');
+  tbody.innerHTML = '';
+  const COLORS = d.allocationColors;
+  Object.entries(d.allocation).forEach(([ticker, weight]) => {
+    const label = d.allocationLabels[ticker];
+    const pct   = (weight * 100).toFixed(1);
+    const color = COLORS[ticker] || '#C8A96E';
+    tbody.innerHTML += `
+      <tr>
+        <td>
+          <div class="alloc-name">${label}</div>
+          <div class="alloc-ticker">${ticker}</div>
+          <div class="alloc-bar-track">
+            <div class="alloc-bar" style="width:0%;background:${color}" data-w="${pct}"></div>
+          </div>
+        </td>
+        <td class="alloc-pct">${pct}%</td>
+      </tr>`;
+  });
+  // Animate bars
+  setTimeout(() => {
+    tbody.querySelectorAll('.alloc-bar').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+  }, 400);
+
+  /* Charts */
+  buildAllocChart(d);
+  buildMcChart(d.monteCarlo, horizon);
+  buildHistChart(d.historicalValues);
+
+  /* Memo */
+  const memoPanel = document.getElementById('memoPanel');
+  if (d.memo) {
+    document.getElementById('memoContent').textContent = d.memo;
+    memoPanel.style.display = 'block';
+  } else {
+    memoPanel.style.display = 'none';
+  }
+
+  /* Previous state panel update */
+  const prevContent = document.getElementById('prevStateContent');
+  if (prevContent) {
+    const alloc = d.allocation;
+    const lines = Object.entries(alloc).map(([t, v]) =>
+      `<span style="color:var(--text)">${t}</span>  <span style="color:var(--gold)">${(v*100).toFixed(1)}%</span>`
+    ).join('<br>');
+    prevContent.innerHTML = `<div style="margin-bottom:8px;font-size:9px;letter-spacing:0.2em;color:var(--muted);">SAVED ALLOCATION</div>${lines}`;
+    document.getElementById('prevStatePanel').style.display = 'block';
+  }
+}
+
+/* ───── CHARTS ───── */
+function buildAllocChart(d) {
+  if (allocChartInst) allocChartInst.destroy();
+  const labels = Object.values(d.allocationLabels);
+  const values = Object.values(d.allocation).map(v => (v*100).toFixed(2));
+  const colors = Object.values(d.allocationColors);
+
+  allocChartInst = new Chart(document.getElementById('allocChart'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: colors, borderColor: '#080A0E', borderWidth: 3, hoverOffset: 8 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: {
+        legend: { position: 'right', labels: { padding: 14, font: { size: 11 }, color: '#D4CCBE' } },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` }
+        }
+      },
+      animation: { duration: 900, easing: 'easeInOutQuart' }
+    }
+  });
+}
+
+function buildMcChart(mc, horizon) {
+  if (mcChartInst) mcChartInst.destroy();
+  const edges  = mc.histogram.edges;
+  const counts = mc.histogram.counts;
+  const midpoints = edges.slice(0,-1).map((e,i) => ((e + edges[i+1])/2).toFixed(2));
+
+  mcChartInst = new Chart(document.getElementById('mcChart'), {
+    type: 'bar',
+    data: {
+      labels: midpoints,
+      datasets: [{
+        data: counts,
+        backgroundColor: midpoints.map(m => {
+          const v = parseFloat(m);
+          if (v < mc.VaR5) return 'rgba(201,79,79,0.7)';
+          if (v < mc.CVaR5) return 'rgba(232,197,71,0.5)';
+          return 'rgba(200,169,110,0.4)';
+        }),
+        borderWidth: 0,
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} paths` } }
+      },
+      scales: {
+        x: { display: false },
+        y: { display: false }
+      },
+      animation: { duration: 800, easing: 'easeOutQuart' }
+    }
+  });
+}
+
+function buildHistChart(values) {
+  if (histChartInst) histChartInst.destroy();
+  const labels = values.map((_, i) => i + 1);
+
+  histChartInst = new Chart(document.getElementById('histChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: '#C8A96E',
+        borderWidth: 1.5,
+        fill: true,
+        backgroundColor: (ctx) => {
+          const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+          g.addColorStop(0,   'rgba(200,169,110,0.18)');
+          g.addColorStop(1,   'rgba(200,169,110,0)');
+          return g;
+        },
+        tension: 0.4,
+        pointRadius: 0,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { display: false },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5C6070', maxTicksLimit: 4 } }
+      },
+      animation: { duration: 1000 }
+    }
+  });
+}
+
+/* ───── HELPERS ───── */
+function animateVal(id, finalVal, suffix='') {
+  document.getElementById(id).textContent = finalVal + suffix;
+}
+
+function showError(msg) {
+  const errorBox = document.getElementById('errorBox');
+  errorBox.textContent = '⚠ ' + msg;
+  errorBox.style.display = 'block';
+  document.getElementById('placeholder').style.display = 'flex';
+}
+</script>
+</body>
+</html>
