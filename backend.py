@@ -173,7 +173,7 @@ def analyze(req: AnalyzeRequest):
         final_array,
         log_returns,
         years=horizon,
-        simulations=5000
+        simulations=1500
     )
 
     # Create histogram structure for UI
