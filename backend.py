@@ -98,14 +98,24 @@ def analyze(req: AnalyzeRequest):
     # ==============================
     # Load Data
     # ==============================
+    global price_cache, return_cache, cov_cache
 
-    loader = DataLoader(tickers)
-    prices = loader.fetch_data()
-    prices = prices[tickers]
+    if price_cache is None:
 
-    log_returns = compute_log_returns(prices)
+        loader = DataLoader(tickers)
+        prices = loader.fetch_data()
+        prices = prices[tickers]
+
+        log_returns = compute_log_returns(prices)
+
+        price_cache = prices
+        return_cache = log_returns
+        cov_cache = covariance_matrix(log_returns)
+
+    prices = price_cache
+    log_returns = return_cache
+    cov_matrix = cov_cache
     mean_returns = annualized_return(log_returns)
-    cov_matrix = covariance_matrix(log_returns)
 
     # ==============================
     # Step 1: Quant Optimization
