@@ -23,6 +23,14 @@ from quant.monte_carlo import monte_carlo_simulation
 app = FastAPI()
 
 # ==============================
+# DATA CACHE (ADD HERE)
+# ==============================
+
+price_cache = None
+return_cache = None
+cov_cache = None
+
+# ==============================
 # Asset Universe
 # ==============================
 
