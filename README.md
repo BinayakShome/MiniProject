@@ -87,6 +87,14 @@ Investment horizon (years): 10
 Risk tolerance (Low/Medium/High): High
 ```
 
+## 🚀 Live Demo
+
+Try the deployed application here:
+
+👉 https://miniproject-odye.onrender.com/
+
+---
+
 ### Example Output
 
 ```
