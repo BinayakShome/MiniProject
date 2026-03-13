@@ -197,6 +197,13 @@ Downloads daily Close prices for 4 Indian ETFs from Yahoo Finance (NSE):
 
 Computes annualised log returns and covariance matrix, then runs **Max Sharpe Ratio** optimization (SciPy SLSQP) to find the efficient frontier allocation.
 
+The quant module performs modern portfolio theory calculations.
+
+ It computes:
+-Log returns
+-Covariance matrix
+-Sharpe ratio
+
 ### 3. Risk Profile Agent
 
 Scores the user on a `[0, 1]` scale from age, investment horizon, and risk tolerance. Caps equity exposure at `0.8 × risk_score` and redistributes excess to liquid assets.
