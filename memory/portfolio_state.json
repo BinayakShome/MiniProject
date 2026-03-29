@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-03-29T16:09:20.424393",
+    "timestamp": "2026-03-29T20:32:14.505602",
     "allocation": {
         "NIF100BEES.NS": 0.016501650165016504,
         "MID150BEES.NS": 0.35203520352035206,
@@ -15,5 +15,5 @@
         "MaxDrawdown": -0.1975,
         "CalmarRatio": 1.1121
     },
-    "risk_score": 0.58
+    "risk_score": 0.56
 }
