@@ -1,19 +1,19 @@
 {
-    "timestamp": "2026-04-02T13:31:55.757395",
+    "timestamp": "2026-04-09T17:58:27.612211",
     "allocation": {
-        "NIF100BEES.NS": 0.00123950056753689,
-        "MID150BEES.NS": 0.10276049943246313,
-        "GOLDBEES.NS": 0.6476,
-        "LIQUIDBEES.NS": 0.24840000000000007
+        "NIF100BEES.NS": 0.0092332353726957,
+        "MID150BEES.NS": 0.15076676462730432,
+        "GOLDBEES.NS": 0.6256,
+        "LIQUIDBEES.NS": 0.21439999999999992
     },
     "regime": "Sideways Market",
     "performance": {
-        "Return": 0.1661,
-        "Volatility": 0.1181,
-        "Sharpe": 0.8981,
-        "CAGR": 0.1805,
-        "MaxDrawdown": -0.1743,
-        "CalmarRatio": 1.0359
+        "Return": 0.1724,
+        "Volatility": 0.1171,
+        "Sharpe": 0.9601,
+        "CAGR": 0.188,
+        "MaxDrawdown": -0.1738,
+        "CalmarRatio": 1.0818
     },
-    "risk_score": 0.13
+    "risk_score": 0.2
 }
