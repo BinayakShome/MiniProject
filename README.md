@@ -763,8 +763,8 @@ AURA is engineered for production-grade resilience. Every failure mode is handle
 
 | Name | Role | Responsibility |
 |------|------|----------------|
-| **Binayak Shome** | Team Lead & Architect | Agent Architecture, System Design |
-| **Debdyuti Chakraborty** | Quant Engineer | Optimization, Efficient Frontier |
+| **Debdyuti Chakraborty** | Team Lead & Quant Engineer | Optimization, Efficient Frontier |
+| **Binayak Shome  ** |  Agent Architecture, System Design |
 | **Atharva Pratap Singh** | Performance Analyst | Backtesting, Performance Metrics |
 | **Aryan Sinha** | Risk Engineer | Monte Carlo Simulation, VaR/CVaR |
 | **Aryan Yadav** | Data Engineer | Data Pipeline, yfinance Integration |
